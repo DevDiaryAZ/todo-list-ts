@@ -10,8 +10,8 @@ export const AddItemForm: React.FC<AddItemFormType> = ({
                                                            callback,
                                                        }) => {
 
-    let [title, setTitle] = useState<string>("")
-    let [error, setError] = useState<string | null>(null)
+    const [title, setTitle] = useState<string>("")
+    const [error, setError] = useState<string | null>(null)
 
     const addTaskLocal = () => {
         let newTitle = title.trim();
