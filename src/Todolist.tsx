@@ -1,8 +1,9 @@
 import React, {ChangeEvent} from 'react';
 import {FilterValuesType} from './App';
-import {AddItemForm} from "./components/AddItemForm";
-import {EditableSpan} from "./components/EditableSpan";
-import {Button} from "@material-ui/core";
+import {AddItemForm} from './AddItemForm';
+import {EditableSpan} from './EditableSpan';
+import {Button, Checkbox, IconButton} from "@mui/material";
+import {Delete} from "@material-ui/icons";
 
 export type TaskType = {
     id: string
@@ -19,31 +20,35 @@ type PropsType = {
     addTask: (title: string, todolistId: string) => void
     changeTaskStatus: (id: string, isDone: boolean, todolistId: string) => void
     removeTodolist: (id: string) => void
+    changeTodolistTitle: (id: string, newTitle: string) => void
     filter: FilterValuesType
-    updateTask: (taskId: string, newTitle: string) => void
-    updateTodolistTitle: (newTitle: string) => void
+    changeTaskTitle: (taskId: string, newTitle: string, todolistId: string) => void
 }
 
 export function Todolist(props: PropsType) {
+    const addTask = (title: string) => {
+        props.addTask(title, props.id);
+    }
 
-    const removeTodolist = () => props.removeTodolist(props.id)
+    const removeTodolist = () => {
+        props.removeTodolist(props.id);
+    }
+    const changeTodolistTitle = (title: string) => {
+        props.changeTodolistTitle(props.id, title);
+    }
 
     const onAllClickHandler = () => props.changeFilter("all", props.id);
     const onActiveClickHandler = () => props.changeFilter("active", props.id);
     const onCompletedClickHandler = () => props.changeFilter("completed", props.id);
 
-    const updateTaskHandler = (taskId: string, newTitle: string) => {
-        props.updateTask(taskId, newTitle)
-    }
-
-    return <div>
-        <h3>
-            <EditableSpan title={props.title} callback={props.updateTodolistTitle}/>
-            <Button variant="contained" onClick={removeTodolist}>x</Button>
-            {/*<button onClick={removeTodolist}>x</button>*/}
+    return <div className={'todolistContainer'} >
+        <h3><EditableSpan value={props.title} onChange={changeTodolistTitle}/>
+            <IconButton aria-label="delete" onClick={removeTodolist}>
+                <Delete/>
+            </IconButton>
         </h3>
-        <AddItemForm todolistId={props.id} callback={(title: string) => props.addTask(title, props.id)}/>
-        <ul>
+        <AddItemForm addItem={addTask}/>
+        <ul style = {{paddingLeft:'0'}}>
             {
                 props.tasks.map(t => {
                     const onClickHandler = () => props.removeTask(t.id, props.id)
@@ -51,26 +56,42 @@ export function Todolist(props: PropsType) {
                         let newIsDoneValue = e.currentTarget.checked;
                         props.changeTaskStatus(t.id, newIsDoneValue, props.id);
                     }
-                    return <li key={t.id} className={t.isDone ? "is-done" : ""}>
-                        <input type="checkbox" onChange={onChangeHandler} checked={t.isDone}/>
-                        {/*<EditableSpan title={t.title} callback={(newTitle: string)=>props.updateTask(t.id, newTitle)}/>*/}
-                        <EditableSpan title={t.title}
-                                      callback={(newTitle: string) => updateTaskHandler(t.id, newTitle)}/>
-                        <button onClick={onClickHandler}>x</button>
+                    const onTitleChangeHandler = (newValue: string) => {
+                        props.changeTaskTitle(t.id, newValue, props.id);
+                    }
+
+
+                    return <li key={t.id} className={t.isDone ? "is-done" : ""} style = {{display:'flex', alignItems:'center'}}>
+                        {/*<input type="checkbox" onChange={onChangeHandler} checked={t.isDone}/>*/}
+                        <Checkbox onChange={onChangeHandler} checked={t.isDone} size="small" />
+                        <EditableSpan value={t.title} onChange={onTitleChangeHandler}/>
+                        {/*<button onClick={onClickHandler}>x</button>*/}
+                        <IconButton aria-label="delete" onClick={onClickHandler}>
+                            <Delete/>
+                        </IconButton>
                     </li>
                 })
             }
         </ul>
         <div>
-            <button className={props.filter === 'all' ? "active-filter" : ""}
-                    onClick={onAllClickHandler}>All
-            </button>
-            <button className={props.filter === 'active' ? "active-filter" : ""}
-                    onClick={onActiveClickHandler}>Active
-            </button>
-            <button className={props.filter === 'completed' ? "active-filter" : ""}
-                    onClick={onCompletedClickHandler}>Completed
-            </button>
+            <Button variant={props.filter === 'all' ? 'outlined' : 'contained'}
+                    style={{maxHeight: '25px', minHeight: '25px', marginLeft: '5px',marginTop: '5px'}}
+                    onClick={onAllClickHandler}>All</Button>
+            <Button variant={props.filter === 'active' ? 'outlined' : 'contained'}
+                    style={{maxHeight: '25px', minHeight: '25px', marginLeft: '5px',marginTop: '5px'}}
+                    onClick={onActiveClickHandler}>Active</Button>
+            <Button variant={props.filter === 'completed' ? 'outlined' : 'contained'}
+                    style={{maxHeight: '25px', minHeight: '25px', marginLeft: '5px', marginTop: '5px'}}
+                    onClick={onCompletedClickHandler}>Completed</Button>
+            {/*<button className={props.filter === 'all' ? "active-filter" : ""}*/}
+            {/*        onClick={onAllClickHandler}>All*/}
+            {/*</button>*/}
+            {/*<button className={props.filter === 'active' ? "active-filter" : ""}*/}
+            {/*        onClick={onActiveClickHandler}>Active*/}
+            {/*</button>*/}
+            {/*<button className={props.filter === 'completed' ? "active-filter" : ""}*/}
+            {/*        onClick={onCompletedClickHandler}>Completed*/}
+            {/*</button>*/}
         </div>
     </div>
 }

@@ -1,10 +1,10 @@
 .App {
-  padding: 30px;
-  display: flex;
+  /*padding: 30px;*/
+  /*display: flex;*/
 }
 
 .App > div {
-  margin-right: 50px;
+  /*margin-right: 50px;*/
 }
 
 .error {
@@ -22,3 +22,27 @@
 .is-done {
   opacity: 0.5;
 }
+
+.content{
+  display: flex;
+  padding: 30px;
+}
+.content > div{
+  margin-right: 30px;
+}
+
+.addContainer{
+  display: flex;
+}
+
+.addContainer > div{
+  margin-left: 20px;
+}
+
+
+/*.todolistContainer {*/
+/*  box-shadow: -5px -5px 9px hsl(0deg 0% 100% / 45%), 5px 5px 9px rgb(94 104 121 / 30%);*/
+/*  border-radius: 8px;*/
+/*  padding: 20px;*/
+/*  height: fit-content;*/
+/*}*/
